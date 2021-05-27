@@ -1,12 +1,21 @@
 import models.MilitaryType;
+
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import planes.MilitaryPlane;
 import planes.PassengerPlane;
 import planes.Plane;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 public class Runner {
+
     static List<Plane> planes = Arrays.asList(
             new PassengerPlane("Boeing-737", 900, 12000, 60500, 164),
             new PassengerPlane("Boeing-737-800", 940, 12300, 63870, 192),
@@ -23,18 +32,22 @@ public class Runner {
             new MilitaryPlane("F-22", 1550, 13000, 11000, MilitaryType.FIGHTER),
             new MilitaryPlane("C-130 Hercules", 650, 5000, 110000, MilitaryType.TRANSPORT)
     );
+    String className = this.getClass().getTypeName();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Runner runner = new Runner();
+        LoggerSet loggerSet = new LoggerSet();
+
         Airport airport = new Airport(planes);
         Airport militaryAirport = new Airport(airport.getMilitaryPlanes());
         Airport passengerAirport = new Airport(airport.getPassengerPlane());
-        System.out.println("Military airport sorted by max distance: " + militaryAirport
+        loggerSet.settingLogger(runner.className).debug("Military airport sorted by max distance: " + militaryAirport
                 .sortByMaxDistance()
                 .toString());
-        System.out.println("Passenger airport sorted by max speed: " + passengerAirport
+        loggerSet.settingLogger(runner.className).debug("Passenger airport sorted by max speed: " + passengerAirport
                 .sortByMaxSpeed()
                 .toString());
 
-        System.out.println("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
+        loggerSet.settingLogger(runner.className).debug("Plane with max passenger capacity: " + passengerAirport.getPassengerPlaneWithMaxPassengersCapacity());
     }
 }
